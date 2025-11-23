@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Био</title>
+    <style>
+        /* ============================================
+           CSS ПЕРЕМЕННЫЕ - ПАЛИТРА И СТИЛЬ
+           ============================================ */
+        :root {
+            --bg-primary: #0f1113;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #2b2b2b;
+            --text-primary: #e4e4e4;
+            --text-secondary: #a0a0a0;
+            --accent: #64b5f6;
+            --accent-light: #90caf9;
+            --glow: rgba(100, 181, 246, 0.2);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --blur-amount: 10px;
+        }
+
+        /* ============================================
+           ГЛОБАЛЬНЫЕ СТИЛИ
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Фоновый эффект */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(100, 181, 246, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(100, 181, 246, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* ============================================
+           HEADER И НАВИГАЦИЯ
+           ============================================ */
+        header {
+            background: rgba(26, 26, 26, 0.7);
+            backdrop-filter: blur(var(--blur-amount));
+            border-bottom: 1px solid rgba(100, 181, 246, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 1rem 0;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            font-size: 0.95rem;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        nav a:hover {
+            color: var(--accent-light);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
+        /* ============================================
+           MAIN И SECTIONS
+           ============================================ */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        section {
+            margin-bottom: 5rem;
+            opacity: 0;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        section:nth-child(1) { animation-delay: 0.1s; }
+        section:nth-child(2) { animation-delay: 0.2s; }
+        section:nth-child(3) { animation-delay: 0.3s; }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--accent-light);
+            letter-spacing: 1px;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            border-radius: 2px;
+        }
+
+        /* ============================================
+           КАРТОЧКИ ЮЗЕРОВ
+           ============================================ */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .user-card {
+            background: rgba(43, 43, 43, 0.5);
+            backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid rgba(100, 181, 246, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(100, 181, 246, 0.1), transparent);
+            transition: var(--transition);
+            transform: rotate(45deg);
+        }
+
+        .user-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(100, 181, 246, 0.4);
+            box-shadow: 0 8px 32px var(--glow);
+            background: rgba(43, 43, 43, 0.8);
+        }
+
+        .user-card:hover::before {
+            animation: shimmer 0.6s ease-in-out;
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .user-info h3 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+        }
+
+        .user-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: var(--bg-primary);
+            font-size: 0.7rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .user-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            transition: var(--transition);
+        }
+
+        .user-link:hover {
+            color: var(--accent-light);
+            transform: translateX(4px);
+        }
+
+        .telegram-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+        }
+
+        /* ============================================
+           КЛАНЫ
+           ============================================ */
+        .clans-container {
+            background: rgba(43, 43, 43, 0.4);
+            backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid rgba(100, 181, 246, 0.15);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+        }
+
+        .clan-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: rgba(26, 26, 26, 0.5);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            border: 1px solid rgba(100, 181, 246, 0.1);
+        }
+
+        .clan-item:hover {
+            background: rgba(26, 26, 26, 0.8);
+            border-color: rgba(100, 181, 246, 0.3);
+            transform: translateX(8px);
+        }
+
+        .clan-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .clan-badge {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: var(--bg-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .clan-name {
+            flex: 1;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .clan-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .clan-link:hover {
+            color: var(--accent-light);
+            transform: translateX(4px);
+        }
+
+        /* ============================================
+           КЕНТЫ
+           ============================================ */
+        .kents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .kent-card {
+            background: rgba(43, 43, 43, 0.5);
+            backdrop-filter: blur(var(--blur-amount));
+            border: 1px solid rgba(100, 181, 246, 0.15);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .kent-card:hover {
+            border-color: rgba(100, 181, 246, 0.4);
+            background: rgba(43, 43, 43, 0.8);
+            box-shadow: 0 4px 16px var(--glow);
+            transform: translateY(-4px);
+        }
+
+        .kent-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .kent-card-name {
+            color: var(--accent-light);
+            font-weight: 600;
+            font-size: 0.9rem;
+            word-break: break-word;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        footer {
+            background: rgba(26, 26, 26, 0.5);
+            border-top: 1px solid rgba(100, 181, 246, 0.1);
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 5rem;
+        }
+
+        /* ============================================
+           АДАПТИВНОСТЬ (МОБИЛЬНЫЙ ВИД)
+           ============================================ */
+        @media (max-width: 768px) {
+            .header-container {
+                padding: 0 1rem;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+                letter-spacing: 1px;
+            }
+
+            nav {
+                display: none;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background: rgba(26, 26, 26, 0.95);
+                backdrop-filter: blur(var(--blur-amount));
+                padding: 2rem 1.5rem;
+                gap: 1rem;
+                border-bottom: 1px solid rgba(100, 181, 246, 0.1);
+                animation: slideDown 0.3s ease-out;
+                z-index: 99;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            nav a {
+                font-size: 1rem;
+                padding: 0.75rem 0;
+                border-bottom: 1px solid rgba(100, 181, 246, 0.05);
+            }
+
+            nav a::after {
+                display: none;
+            }
+
+            nav a:hover {
+                color: var(--accent-light);
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            main {
+                padding: 2rem 1rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .users-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 1rem;
+            }
+
+            .clans-container {
+                max-width: 100%;
+                padding: 1.5rem;
+            }
+
+            .kents-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 1rem;
+            }
+
+            .clan-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+                padding: 1rem;
+            }
+
+            .clan-badge {
+                width: 100%;
+            }
+
+            .clan-link {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .kents-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            .clans-container {
+                padding: 1.25rem;
+            }
+
+            .clan-item {
+                padding: 0.75rem;
+                margin-bottom: 0.75rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+                margin-bottom: 1.25rem;
+            }
+
+            main {
+                padding: 1.5rem 1rem;
+            }
+
+            .user-card {
+                padding: 1.25rem;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .user-info h3 {
+                font-size: 0.9rem;
+            }
+
+            footer {
+                padding: 1.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========================================
+         HEADER С НАВИГАЦИЕЙ
+         ======================================== -->
+    <header>
+        <div class="header-container">
+            <div class="logo">БИО</div>
+            <nav id="nav">
+                <a href="#users" class="nav-link">Юзеры</a>
+                <a href="#clans" class="nav-link">Кланы</a>
+                <a href="#kents" class="nav-link">Кенты</a>
+            </nav>
+            <button class="hamburger" id="hamburger" aria-label="Меню">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ========================================
+         ОСНОВНОЙ КОНТЕНТ
+         ======================================== -->
+    <main>
+        <!-- РАЗДЕЛ ЮЗЕРЫ -->
+        <section id="users">
+            <h2>Юзеры</h2>
+            <div class="users-grid">
+                <!-- Основной юзер -->
+                <div class="user-card">
+                    <div class="user-header">
+                        <div class="user-avatar">W</div>
+                        <div class="user-info">
+                            <h3>@werryattack</h3>
+                            <div class="user-badge">основной</div>
+                        </div>
+                    </div>
+                    <a href="https://t.me/werryattack" target="_blank" rel="noopener noreferrer" class="user-link">
+                        <svg class="telegram-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.91 3.79L20.3 20.84c-.25 1.1-.98 1.86-2.04 1.86-.5 0-.98-.15-1.39-.4l-5.57-4.51-2.6 2.52c-.37.36-.82.54-1.31.54-.08 0-.17 0-.25-.02-1.09-.1-1.97-.98-2.09-2.07l-1.25-8.06-6.77-2.11c-1.1-.35-1.82-1.17-1.82-2.18 0-1.22.98-2.18 2.2-2.18h14.5c1.22 0 2.2.96 2.2 2.18 0 .27-.05.53-.16.77l.01.01z"/>
+                        </svg>
+                        Перейти
+                    </a>
+                </div>
+
+                <!-- Остальные юзеры -->
+                <div class="user-card">
+                    <div class="user-header">
+                        <div class="user-avatar">S</div>
+                        <div class="user-info">
+                            <h3>@sexylondon</h3>
+                        </div>
+                    </div>
+                    <a href="https://t.me/sexylondon" target="_blank" rel="noopener noreferrer" class="user-link">
+                        <svg class="telegram-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.91 3.79L20.3 20.84c-.25 1.1-.98 1.86-2.04 1.86-.5 0-.98-.15-1.39-.4l-5.57-4.51-2.6 2.52c-.37.36-.82.54-1.31.54-.08 0-.17 0-.25-.02-1.09-.1-1.97-.98-2.09-2.07l-1.25-8.06-6.77-2.11c-1.1-.35-1.82-1.17-1.82-2.18 0-1.22.98-2.18 2.2-2.18h14.5c1.22 0 2.2.96 2.2 2.18 0 .27-.05.53-.16.77l.01.01z"/>
+                        </svg>
+                        Перейти
+                    </a>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-header">
+                        <div class="user-avatar">X</div>
+                        <div class="user-info">
+                            <h3>@xeodxeo</h3>
+                        </div>
+                    </div>
+                    <a href="https://t.me/xeodxeo" target="_blank" rel="noopener noreferrer" class="user-link">
+                        <svg class="telegram-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.91 3.79L20.3 20.84c-.25 1.1-.98 1.86-2.04 1.86-.5 0-.98-.15-1.39-.4l-5.57-4.51-2.6 2.52c-.37.36-.82.54-1.31.54-.08 0-.17 0-.25-.02-1.09-.1-1.97-.98-2.09-2.07l-1.25-8.06-6.77-2.11c-1.1-.35-1.82-1.17-1.82-2.18 0-1.22.98-2.18 2.2-2.18h14.5c1.22 0 2.2.96 2.2 2.18 0 .27-.05.53-.16.77l.01.01z"/>
+                        </svg>
+                        Перейти
+                    </a>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-header">
+                        <div class="user-avatar">P</div>
+                        <div class="user-info">
+                            <h3>@PACCTPONCTBO...</h3>
+                        </div>
+                    </div>
+                    <a href="https://t.me/PACCTPONCTBO_GAVRNNLA" target="_blank" rel="noopener noreferrer" class="user-link">
+                        <svg class="telegram-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.91 3.79L20.3 20.84c-.25 1.1-.98 1.86-2.04 1.86-.5 0-.98-.15-1.39-.4l-5.57-4.51-2.6 2.52c-.37.36-.82.54-1.31.54-.08 0-.17 0-.25-.02-1.09-.1-1.97-.98-2.09-2.07l-1.25-8.06-6.77-2.11c-1.1-.35-1.82-1.17-1.82-2.18 0-1.22.98-2.18 2.2-2.18h14.5c1.22 0 2.2.96 2.2 2.18 0 .27-.05.53-.16.77l.01.01z"/>
+                        </svg>
+                        Перейти
+                    </a>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-header">
+                        <div class="user-avatar">T</div>
+                        <div class="user-info">
+                            <h3>@truedoxsnos</h3>
+                        </div>
+                    </div>
+                    <a href="https://t.me/truedoxsnos" target="_blank" rel="noopener noreferrer" class="user-link">
+                        <svg class="telegram-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.91 3.79L20.3 20.84c-.25 1.1-.98 1.86-2.04 1.86-.5 0-.98-.15-1.39-.4l-5.57-4.51-2.6 2.52c-.37.36-.82.54-1.31.54-.08 0-.17 0-.25-.02-1.09-.1-1.97-.98-2.09-2.07l-1.25-8.06-6.77-2.11c-1.1-.35-1.82-1.17-1.82-2.18 0-1.22.98-2.18 2.2-2.18h14.5c1.22 0 2.2.96 2.2 2.18 0 .27-.05.53-.16.77l.01.01z"/>
+                        </svg>
+                        Перейти
+                    </a>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-header">
+                        <div class="user-avatar">W</div>
+                        <div class="user-info">
+                            <h3>@weoxoeoe</h3>
+                        </div>
+                    </div>
+                    <a href="https://t.me/weoxoeoe" target="_blank" rel="noopener noreferrer" class="user-link">
+                        <svg class="telegram-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.91 3.79L20.3 20.84c-.25 1.1-.98 1.86-2.04 1.86-.5 0-.98-.15-1.39-.4l-5.57-4.51-2.6 2.52c-.37.36-.82.54-1.31.54-.08 0-.17 0-.25-.02-1.09-.1-1.97-.98-2.09-2.07l-1.25-8.06-6.77-2.11c-1.1-.35-1.82-1.17-1.82-2.18 0-1.22.98-2.18 2.2-2.18h14.5c1.22 0 2.2.96 2.2 2.18 0 .27-.05.53-.16.77l.01.01z"/>
+                        </svg>
+                        Перейти
+                    </a>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-header">
+                        <div class="user-avatar">E</div>
+                        <div class="user-info">
+                            <h3>@exemope</h3>
+                        </div>
+                    </div>
+                    <a href="https://t.me/exemope" target="_blank" rel="noopener noreferrer" class="user-link">
+                        <svg class="telegram-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.91 3.79L20.3 20.84c-.25 1.1-.98 1.86-2.04 1.86-.5 0-.98-.15-1.39-.4l-5.57-4.51-2.6 2.52c-.37.36-.82.54-1.31.54-.08 0-.17 0-.25-.02-1.09-.1-1.97-.98-2.09-2.07l-1.25-8.06-6.77-2.11c-1.1-.35-1.82-1.17-1.82-2.18 0-1.22.98-2.18 2.2-2.18h14.5c1.22 0 2.2.96 2.2 2.18 0 .27-.05.53-.16.77l.01.01z"/>
+                        </svg>
+                        Перейти
+                    </a>
+                </div>
+
+                <div class="user-card">
+                    <div class="user-header">
+                        <div class="user-avatar">O</div>
+                        <div class="user-info">
+                            <h3>@ownwebosint</h3>
+                        </div>
+                    </div>
+                    <a href="https://t.me/ownwebosint" target="_blank" rel="noopener noreferrer" class="user-link">
+                        <svg class="telegram-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.91 3.79L20.3 20.84c-.25 1.1-.98 1.86-2.04 1.86-.5 0-.98-.15-1.39-.4l-5.57-4.51-2.6 2.52c-.37.36-.82.54-1.31.54-.08 0-.17 0-.25-.02-1.09-.1-1.97-.98-2.09-2.07l-1.25-8.06-6.77-2.11c-1.1-.35-1.82-1.17-1.82-2.18 0-1.22.98-2.18 2.2-2.18h14.5c1.22 0 2.2.96 2.2 2.18 0 .27-.05.53-.16.77l.01.01z"/>
+                        </svg>
+                        Перейти
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- РАЗДЕЛ КЛАНЫ -->
+        <section id="clans">
+            <h2>Кланы</h2>
+            <div class="clans-container">
+                <div class="clan-item">
+                    <div class="clan-badge">co-owner</div>
+                    <div class="clan-name">Battalion of officers</div>
+                </div>
+                <div class="clan-item">
+                    <div class="clan-badge">owner</div>
+                    <div class="clan-name">new stack officers</div>
+                </div>
+                <div class="clan-item">
+                    <div class="clan-name" style="flex: 1;">Battalion of officers</div>
+                    <a href="https://t.me/battalionofficer" target="_blank" rel="noopener noreferrer" class="clan-link">
+                        <svg class="telegram-icon" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M23.91 3.79L20.3 20.84c-.25 1.1-.98 1.86-2.04 1.86-.5 0-.98-.15-1.39-.4l-5.57-4.51-2.6 2.52c-.37.36-.82.54-1.31.54-.08 0-.17 0-.25-.02-1.09-.1-1.97-.98-2.09-2.07l-1.25-8.06-6.77-2.11c-1.1-.35-1.82-1.17-1.82-2.18 0-1.22.98-2.18 2.2-2.18h14.5c1.22 0 2.2.96 2.2 2.18 0 .27-.05.53-.16.77l.01.01z"/>
+                        </svg>
+                        Открыть
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- РАЗДЕЛ КЕНТЫ -->
+        <section id="kents">
+            <h2>Кенты</h2>
+            <div class="kents-grid">
+                <div class="kent-card">
+                    <div class="kent-avatar">T</div>
+                    <div class="kent-card-name">@trinchek</div>
+                </div>
+                <div class="kent-card">
+                    <div class="kent-avatar">A</div>
+                    <div class="kent-card-name">@attackneverbal</div>
+                </div>
+                <div class="kent-card">
+                    <div class="kent-avatar">A</div>
+                    <div class="kent-card-name">@attackviz</div>
+                </div>
+                <div class="kent-card">
+                    <div class="kent-avatar">A</div>
+                    <div class="kent-card-name">@attackletal</div>
+                </div>
+                <div class="kent-card">
+                    <div class="kent-avatar">O</div>
+                    <div class="kent-card-name">@onlysexsi</div>
+                </div>
+                <div class="kent-card">
+                    <div class="kent-avatar">O</div>
+                    <div class="kent-card-name">@offiserov</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========================================
+         FOOTER
+         ======================================== -->
+    <footer>
+        <p>&copy; 2024 БИО. Все права защищены.</p>
+        <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-secondary);">
+        </p>
+    </footer>
+
+    <!-- ============================================
+         JAVASCRIPT - ФУНКЦИОНАЛЬНОСТЬ
+         ============================================ -->
+    <script>
+        // Меню гамбургер для мобильных
+        const hamburger = document.getElementById('hamburger');
+        const nav = document.getElementById('nav');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            nav.classList.toggle('active');
+        });
+
+        // Закрытие меню при клике на ссылку
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                nav.classList.remove('active');
+            });
+        });
+
+        // Плавный скролл при клике на якоря (бонус)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && document.querySelector(href)) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Опциональное предупреждение при переходе в Telegram
+        // Раскомментируй эту строку если нужно:
+        // window.addEventListener('beforeunload', (e) => { console.log('Переход на Telegram'); });
+    </script>
+</body>
+</html>
